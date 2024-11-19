@@ -17,13 +17,17 @@ pipeline {
                 }
             }
         }
-        stage('Docker push') {
-             withCredentials([string(credentialsId: 'DockerPass', variable: 'DockerPass')]) {
-        sh 'docker login -u anushree039 -p ${DockerPass}'
-        sh 'docker image push anushree039/$JOB_NAME:v1.$BUILD_ID'
-        sh 'docker image push anushree039/$JOB_NAME:latest'
-        }
-     }
-   } 
- }
 
+        stage('Docker Push') {
+            steps {
+                script {
+                    withCredentials([string(credentialsId: 'DockerPass', variable: 'DockerPass')]) {
+                        sh 'docker login -u anushree039 -p ${DockerPass}'
+                        sh 'docker image push anushree039/$JOB_NAME:v1.$BUILD_ID'
+                        sh 'docker image push anushree039/$JOB_NAME:latest'
+                    }
+                }
+            }
+        }
+    } 
+}
