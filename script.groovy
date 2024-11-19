@@ -19,9 +19,9 @@ pipeline {
         }
         stage('Docker push') {
              withCredentials([string(credentialsId: 'DockerPass', variable: 'DockerPass')]) {
-        sh 'docker login -u abdallahdoc -p ${DockerPass}'
-        sh 'docker image push abdallahdoc/$JOB_NAME:v1.$BUILD_ID'
-        sh 'docker image push abdallahdoc/$JOB_NAME:latest'
+        sh 'docker login -u anushree039 -p ${DockerPass}'
+        sh 'docker image push anushree039/$JOB_NAME:v1.$BUILD_ID'
+        sh 'docker image push anushree039/$JOB_NAME:latest'
         }
     }
 }
