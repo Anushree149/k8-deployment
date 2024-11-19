@@ -29,5 +29,13 @@ pipeline {
                 }
             }
         }
-    } 
+
+        stage("Copy") {
+            steps {
+                script {
+                    sh "scp /var/lib/jenkins/workspace/k8-deployment/ansible-playbook.yml ubuntu@52.66.202.210:/tmp"
+                }
+            } 
+        }
+    }
 }
