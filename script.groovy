@@ -30,16 +30,24 @@ pipeline {
             }
         }
 
-        stage("Copy") {
+        stage('Copy') {
             steps {
                 script {
-                    sh "scp /var/lib/jenkins/workspace/k8-deployment/ansible-playbook.yml ubuntu@13.232.174.81:/tmp"
-                    sshagent(['ansible']) {
-                        sh "mv /tmp/ansible-playbook.yml /home/ubuntu"
-                    } 
+                    // Using WORKSPACE for dynamic path
+                    sh "scp ${WORKSPACE}/ansible-playbook.yml ubuntu@13.232.174.81:/tmp"
                     
+                    // Checking if the file exists before moving it
+                    sshagent(['ansible']) {
+                        sh """
+                            if [ -f /tmp/ansible-playbook.yml ]; then
+                                mv /tmp/ansible-playbook.yml /home/ubuntu
+                            else
+                                echo "File not found in /tmp, skipping move."
+                            fi
+                        """
+                    }
                 }
-            } 
+            }
         }
     }
 }
