@@ -33,7 +33,11 @@ pipeline {
         stage("Copy") {
             steps {
                 script {
-                    sh "scp /var/lib/jenkins/workspace/k8-deployment/ansible-playbook.yml ubuntu@52.66.202.210:/tmp"
+                    sh "scp /var/lib/jenkins/workspace/k8-deployment/ansible-playbook.yml ubuntu@13.232.174.81:/tmp"
+                    sshagent(['ansible']) {
+                        sh "mv /tmp/ansible-playbook.yml /home/ubuntu"
+                    } 
+                    
                 }
             } 
         }
