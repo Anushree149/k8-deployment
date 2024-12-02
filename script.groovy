@@ -4,7 +4,7 @@ pipeline {
     stages { 
         stage('Git Clone') { 
             steps {
-                git branch: "main", url: 'https://github.com/Ab-D-ev/kubernetes-devops-project.git'
+                git branch: "main", url: 'https://github.com/Ab-D-ev/kubernetes-devops-project.git' 
             } 
         } 
         
@@ -30,15 +30,15 @@ pipeline {
             }
         }
 
-        stage("Copy to Remote Server") {
+        stage("Copy") {
             steps {
                 script {
-                    withCredentials([sshUserPrivateKey(credentialsId: 'ansible', keyFileVariable: 'SSH_KEY')]) {
-                        sh """
-                        scp -o StrictHostKeyChecking=no -i ${SSH_KEY} ansible-playbook.yml ubuntu@13.233.215.80:/tmp
-                        ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ubuntu@13.233.215.80 'mv /tmp/ansible-playbook.yml /home/ubuntu'
-                        """
-                    }
+                    sh "scp /var/lib/jenkins/workspace/k8-deployment/ansible-playbook.yml ubuntu@13.233.215.80:/tmp"
+                    sshagent(['ansible']) {
+                        sh 'ssh -o StrictHostKeyChecking=no ubuntu@13.233.215.80'
+                        sh "mv /tmp/ansible-playbook.yml /home/ubuntu"
+                    } 
+                    
                 }
             } 
         }
