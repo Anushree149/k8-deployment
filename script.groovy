@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         SERVER_IP = '3.6.36.148'  // Server IP address
-        REPO_URL = 'https://github.com/Ab-D-ev/kubernetes-devops-project.git'  // GitHub repository URL
+        REPO_URL = 'https://github.com/Anushree149/k8-deployment.git'  // GitHub repository URL
         DOCKER_USER = 'anushree039'  // DockerHub username
     }
 
@@ -12,8 +12,8 @@ pipeline {
             steps {
                 script {
                     sshagent(['ansible']) {
-                        sh '''
-                        ssh -o StrictHostKeyChecking=no ubuntu@${SERVER_IP} <<EOF
+                        sh """
+                        ssh -o StrictHostKeyChecking=no ubuntu@${SERVER_IP} << 'EOF'
                         # Ensure the directory exists
                         if [ ! -d "/home/ubuntu/k8-deployment" ]; then
                             mkdir -p /home/ubuntu/k8-deployment
@@ -29,7 +29,7 @@ pipeline {
                             git pull
                         fi
                         EOF
-                        '''
+                        """
                     }
                 }
             }
@@ -39,8 +39,8 @@ pipeline {
             steps {
                 script {
                     sshagent(['ansible']) {
-                        sh '''
-                        ssh -o StrictHostKeyChecking=no ubuntu@${SERVER_IP} <<EOF
+                        sh """
+                        ssh -o StrictHostKeyChecking=no ubuntu@${SERVER_IP} << 'EOF'
                         cd /home/ubuntu/k8-deployment/kubernetes-devops-project
 
                         # Docker Build
@@ -50,7 +50,7 @@ pipeline {
                         docker tag k8-deployment:v1.${BUILD_ID} ${DOCKER_USER}/k8-deployment:v1.${BUILD_ID}
                         docker tag k8-deployment:v1.${BUILD_ID} ${DOCKER_USER}/k8-deployment:latest
                         EOF
-                        '''
+                        """
                     }
                 }
             }
@@ -61,8 +61,8 @@ pipeline {
                 script {
                     sshagent(['ansible']) {
                         withCredentials([string(credentialsId: 'DockerPass', variable: 'DockerPass')]) {
-                            sh '''
-                            ssh -o StrictHostKeyChecking=no ubuntu@${SERVER_IP} <<EOF
+                            sh """
+                            ssh -o StrictHostKeyChecking=no ubuntu@${SERVER_IP} << 'EOF'
                             # Docker login
                             echo ${DockerPass} | docker login -u ${DOCKER_USER} --password-stdin
 
@@ -73,7 +73,7 @@ pipeline {
                             # Logout of Docker
                             docker logout
                             EOF
-                            '''
+                            """
                         }
                     }
                 }
