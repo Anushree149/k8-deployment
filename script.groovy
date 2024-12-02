@@ -2,9 +2,9 @@ pipeline {
     agent any
 
     environment {
-        SERVER_IP = '3.6.36.148'                           // Server IP address
-        REPO_URL = 'https://github.com/Ab-D-ev/kubernetes-devops-project.git' // GitHub repository URL
-        DOCKER_USER = 'anushree039'                        // DockerHub username
+        SERVER_IP = '3.6.36.148'  // Server IP address
+        REPO_URL = 'https://github.com/Ab-D-ev/kubernetes-devops-project.git'  // GitHub repository URL
+        DOCKER_USER = 'anushree039'  // DockerHub username
     }
 
     stages {
@@ -12,8 +12,8 @@ pipeline {
             steps {
                 script {
                     sshagent(['ansible']) {
-                        sh '''
-                        ssh -o StrictHostKeyChecking=no ubuntu@${SERVER_IP} << EOF
+                        sh ''' 
+                        ssh -o StrictHostKeyChecking=no ubuntu@${SERVER_IP} <<'EOF'
                         # Ensure the directory exists
                         if [ ! -d "/home/ubuntu/k8-deployment" ]; then
                             mkdir -p /home/ubuntu/k8-deployment
@@ -39,12 +39,16 @@ pipeline {
             steps {
                 script {
                     sshagent(['ansible']) {
-                        sh '''
-                        ssh -o StrictHostKeyChecking=no ubuntu@${SERVER_IP} << EOF
+                        sh ''' 
+                        ssh -o StrictHostKeyChecking=no ubuntu@${SERVER_IP} <<'EOF'
                         cd /home/ubuntu/k8-deployment/kubernetes-devops-project
-                        docker build -t k8-deployment:v1.$BUILD_ID .
-                        docker tag k8-deployment:v1.$BUILD_ID ${DOCKER_USER}/k8-deployment:v1.$BUILD_ID
-                        docker tag k8-deployment:v1.$BUILD_ID ${DOCKER_USER}/k8-deployment:latest
+
+                        # Docker Build
+                        docker build -t k8-deployment:v1.${BUILD_ID} .
+                        
+                        # Tag the image
+                        docker tag k8-deployment:v1.${BUILD_ID} ${DOCKER_USER}/k8-deployment:v1.${BUILD_ID}
+                        docker tag k8-deployment:v1.${BUILD_ID} ${DOCKER_USER}/k8-deployment:latest
                         EOF
                         '''
                     }
@@ -57,11 +61,17 @@ pipeline {
                 script {
                     sshagent(['ansible']) {
                         withCredentials([string(credentialsId: 'DockerPass', variable: 'DockerPass')]) {
-                            sh '''
-                            ssh -o StrictHostKeyChecking=no ubuntu@${SERVER_IP} << EOF
+                            sh ''' 
+                            ssh -o StrictHostKeyChecking=no ubuntu@${SERVER_IP} <<'EOF'
+                            # Docker login
                             echo ${DockerPass} | docker login -u ${DOCKER_USER} --password-stdin
-                            docker push ${DOCKER_USER}/k8-deployment:v1.$BUILD_ID
+
+                            # Push Docker images
+                            docker push ${DOCKER_USER}/k8-deployment:v1.${BUILD_ID}
                             docker push ${DOCKER_USER}/k8-deployment:latest
+                            
+                            # Logout of Docker
+                            docker logout
                             EOF
                             '''
                         }
