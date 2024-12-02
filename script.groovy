@@ -7,7 +7,29 @@ pipeline {
                 git branch: "main", url: 'https://github.com/Ab-D-ev/kubernetes-devops-project.git' 
             } 
         } 
-     } 
- }
-    
+        
+        stage('Docker Build') {
+            steps {
+                script {
+                    sh 'docker image build -t $JOB_NAME:v1.$BUILD_ID .'
+                    sh 'docker image tag $JOB_NAME:v1.$BUILD_ID anushree039/$JOB_NAME:v1.$BUILD_ID'
+                    sh 'docker image tag $JOB_NAME:v1.$BUILD_ID anushree039/$JOB_NAME:latest'
+                }
+            }
+        }
 
+        stage('Docker Push') {
+            steps {
+                script {
+                    withCredentials([string(credentialsId: 'DockerPass', variable: 'DockerPass')]) {
+                        sh 'docker login -u anushree039 -p ${DockerPass}'
+                        sh 'docker image push anushree039/$JOB_NAME:v1.$BUILD_ID'
+                        sh 'docker image push anushree039/$JOB_NAME:latest'
+                    }
+                }
+            }
+        }
+
+   
+    }
+}
