@@ -13,20 +13,9 @@ pipeline {
                 script {
                     sshagent(['ansible']) {
                         sh """
-                        ssh -o StrictHostKeyChecking=no ubuntu@${SERVER_IP} 'bash -s' << 'EOF'
-                        if [ ! -d "/home/ubuntu/k8-deployment" ]; then
-                            mkdir -p /home/ubuntu/k8-deployment
-                        fi
-
-                        cd /home/ubuntu/k8-deployment
-
-                        if [ ! -d "kubernetes-devops-project" ]; then
-                            git clone ${REPO_URL} kubernetes-devops-project
-                        else
-                            cd kubernetes-devops-project
-                            git pull
-                        fi
-                        EOF
+                        ssh -o StrictHostKeyChecking=no ubuntu@${SERVER_IP} 'bash -c "if [ ! -d /home/ubuntu/k8-deployment ]; then mkdir -p /home/ubuntu/k8-deployment; fi && \
+                        cd /home/ubuntu/k8-deployment && \
+                        if [ ! -d kubernetes-devops-project ]; then git clone ${REPO_URL} kubernetes-devops-project; else cd kubernetes-devops-project && git pull; fi"'
                         """
                     }
                 }
@@ -38,13 +27,10 @@ pipeline {
                 script {
                     sshagent(['ansible']) {
                         sh """
-                        ssh -o StrictHostKeyChecking=no ubuntu@${SERVER_IP} 'bash -s' << 'EOF'
-                        cd /home/ubuntu/k8-deployment/kubernetes-devops-project
-
-                        docker build -t k8-deployment:v1.${BUILD_ID} .
-                        docker tag k8-deployment:v1.${BUILD_ID} ${DOCKER_USER}/k8-deployment:v1.${BUILD_ID}
-                        docker tag k8-deployment:v1.${BUILD_ID} ${DOCKER_USER}/k8-deployment:latest
-                        EOF
+                        ssh -o StrictHostKeyChecking=no ubuntu@${SERVER_IP} 'bash -c "cd /home/ubuntu/k8-deployment/kubernetes-devops-project && \
+                        docker build -t k8-deployment:v1.${BUILD_ID} . && \
+                        docker tag k8-deployment:v1.${BUILD_ID} ${DOCKER_USER}/k8-deployment:v1.${BUILD_ID} && \
+                        docker tag k8-deployment:v1.${BUILD_ID} ${DOCKER_USER}/k8-deployment:latest"'
                         """
                     }
                 }
@@ -57,14 +43,10 @@ pipeline {
                     sshagent(['ansible']) {
                         withCredentials([string(credentialsId: 'DockerPass', variable: 'DockerPass')]) {
                             sh """
-                            ssh -o StrictHostKeyChecking=no ubuntu@${SERVER_IP} 'bash -s' << 'EOF'
-                            echo ${DockerPass} | docker login -u ${DOCKER_USER} --password-stdin
-
-                            docker push ${DOCKER_USER}/k8-deployment:v1.${BUILD_ID}
-                            docker push ${DOCKER_USER}/k8-deployment:latest
-
-                            docker logout
-                            EOF
+                            ssh -o StrictHostKeyChecking=no ubuntu@${SERVER_IP} 'bash -c "echo ${DockerPass} | docker login -u ${DOCKER_USER} --password-stdin && \
+                            docker push ${DOCKER_USER}/k8-deployment:v1.${BUILD_ID} && \
+                            docker push ${DOCKER_USER}/k8-deployment:latest && \
+                            docker logout"'
                             """
                         }
                     }
