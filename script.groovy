@@ -5,7 +5,7 @@ pipeline {
         stage('Git Clone') {
             steps {
                 script {
-                    sshagent(['ansible']) {
+                    sshagent(['ubuntu']) {
                         sh '''
                         ssh -o StrictHostKeyChecking=no ubuntu@3.6.36.148 << EOF
                         cd /home/ubuntu/k8-deployment
@@ -20,7 +20,7 @@ pipeline {
         stage('Docker Build') {
             steps {
                 script {
-                    sshagent(['ansible']) {
+                    sshagent(['ubuntu']) {
                         sh '''
                         ssh -o StrictHostKeyChecking=no ubuntu@3.6.36.148 << EOF
                         cd /home/ubuntu/k8-deployment
