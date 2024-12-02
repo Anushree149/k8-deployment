@@ -12,8 +12,8 @@ pipeline {
             steps {
                 script {
                     sshagent(['ansible']) {
-                        sh ''' 
-                        ssh -o StrictHostKeyChecking=no ubuntu@${SERVER_IP} <<'EOF'
+                        sh '''
+                        ssh -o StrictHostKeyChecking=no ubuntu@${SERVER_IP} <<EOF
                         # Ensure the directory exists
                         if [ ! -d "/home/ubuntu/k8-deployment" ]; then
                             mkdir -p /home/ubuntu/k8-deployment
@@ -39,8 +39,8 @@ pipeline {
             steps {
                 script {
                     sshagent(['ansible']) {
-                        sh ''' 
-                        ssh -o StrictHostKeyChecking=no ubuntu@${SERVER_IP} <<'EOF'
+                        sh '''
+                        ssh -o StrictHostKeyChecking=no ubuntu@${SERVER_IP} <<EOF
                         cd /home/ubuntu/k8-deployment/kubernetes-devops-project
 
                         # Docker Build
@@ -61,8 +61,8 @@ pipeline {
                 script {
                     sshagent(['ansible']) {
                         withCredentials([string(credentialsId: 'DockerPass', variable: 'DockerPass')]) {
-                            sh ''' 
-                            ssh -o StrictHostKeyChecking=no ubuntu@${SERVER_IP} <<'EOF'
+                            sh '''
+                            ssh -o StrictHostKeyChecking=no ubuntu@${SERVER_IP} <<EOF
                             # Docker login
                             echo ${DockerPass} | docker login -u ${DOCKER_USER} --password-stdin
 
