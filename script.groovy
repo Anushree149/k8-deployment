@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         SERVER_IP = '3.6.36.148'  // Server IP address
-        REPO_URL = 'https://github.com/Anushree149/k8-deployment.git'  // GitHub repository URL
+        REPO_URL = 'https://github.com/Ab-D-ev/kubernetes-devops-project.git'  // GitHub repository URL
         DOCKER_USER = 'anushree039'  // DockerHub username
     }
 
