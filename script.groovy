@@ -9,7 +9,7 @@ pipeline {
                         sh '''
                         ssh -o StrictHostKeyChecking=no ubuntu@3.6.36.148 << EOF
                         cd /home/ubuntu/k8-deployment
-                        git clone https://github.com/Anushree149/k8-deployment.git || (cd k8-deployment && git pull)
+                        git clone https://github.com/Ab-D-ev/kubernetes-devops-project.git || (cd k8-deployment && git pull)
                         EOF
                         '''
                     }
