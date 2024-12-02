@@ -4,7 +4,14 @@ pipeline {
     stages { 
         stage('Git Clone') { 
             steps {
-                git branch: "main", url: 'https://github.com/Ab-D-ev/kubernetes-devops-project.git' 
+                script {
+                    sshagent(['ansible']) {
+                    git branch: "main", url: 'https://github.com/Ab-D-ev/kubernetes-devops-project.git'
+                }
+
+            }
+
+                
             } 
         } 
         
