@@ -1,15 +1,33 @@
 pipeline {
     agent any
 
+    environment {
+        SERVER_IP = '3.6.36.148'                           // Server IP address
+        REPO_URL = 'https://github.com/Ab-D-ev/kubernetes-devops-project.git' // GitHub repository URL
+        DOCKER_USER = 'anushree039'                        // DockerHub username
+    }
+
     stages {
         stage('Git Clone') {
             steps {
                 script {
-                    sshagent(['ansible']) {
+                    sshagent(['ubuntu']) {
                         sh '''
-                        ssh -o StrictHostKeyChecking=no ubuntu@3.6.36.148 << EOF
+                        ssh -o StrictHostKeyChecking=no ubuntu@${SERVER_IP} << EOF
+                        # Ensure the directory exists
+                        if [ ! -d "/home/ubuntu/k8-deployment" ]; then
+                            mkdir -p /home/ubuntu/k8-deployment
+                        fi
+
                         cd /home/ubuntu/k8-deployment
-                        git clone https://github.com/Ab-D-ev/kubernetes-devops-project.git || (cd k8-deployment && git pull)
+
+                        # Clone or pull the repository
+                        if [ ! -d "kubernetes-devops-project" ]; then
+                            git clone ${REPO_URL} kubernetes-devops-project
+                        else
+                            cd kubernetes-devops-project
+                            git pull
+                        fi
                         EOF
                         '''
                     }
@@ -22,11 +40,11 @@ pipeline {
                 script {
                     sshagent(['ansible']) {
                         sh '''
-                        ssh -o StrictHostKeyChecking=no ubuntu@3.6.36.148 << EOF
-                        cd /home/ubuntu/k8-deployment
+                        ssh -o StrictHostKeyChecking=no ubuntu@${SERVER_IP} << EOF
+                        cd /home/ubuntu/k8-deployment/kubernetes-devops-project
                         docker build -t k8-deployment:v1.$BUILD_ID .
-                        docker tag k8-deployment:v1.$BUILD_ID anushree039/k8-deployment:v1.$BUILD_ID
-                        docker tag k8-deployment:v1.$BUILD_ID anushree039/k8-deployment:latest
+                        docker tag k8-deployment:v1.$BUILD_ID ${DOCKER_USER}/k8-deployment:v1.$BUILD_ID
+                        docker tag k8-deployment:v1.$BUILD_ID ${DOCKER_USER}/k8-deployment:latest
                         EOF
                         '''
                     }
@@ -37,19 +55,28 @@ pipeline {
         stage('Docker Push') {
             steps {
                 script {
-                    sshagent(['ubuntu']) {
+                    sshagent(['ansible']) {
                         withCredentials([string(credentialsId: 'DockerPass', variable: 'DockerPass')]) {
                             sh '''
-                            ssh -o StrictHostKeyChecking=no ubuntu@3.6.36.148 << EOF
-                            echo ${DockerPass} | docker login -u anushree039 --password-stdin
-                            docker push anushree039/k8-deployment:v1.$BUILD_ID
-                            docker push anushree039/k8-deployment:latest
+                            ssh -o StrictHostKeyChecking=no ubuntu@${SERVER_IP} << EOF
+                            echo ${DockerPass} | docker login -u ${DOCKER_USER} --password-stdin
+                            docker push ${DOCKER_USER}/k8-deployment:v1.$BUILD_ID
+                            docker push ${DOCKER_USER}/k8-deployment:latest
                             EOF
                             '''
                         }
                     }
                 }
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline executed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed. Please check the logs for more details.'
         }
     }
 }
