@@ -33,9 +33,9 @@ pipeline {
         stage("Copy") {
             steps {
                 script {
-                    sh "scp /var/lib/jenkins/workspace/k8-deployment/ansible-playbook.yml ubuntu@65.0.80.22:/tmp"
+                    sh "scp /var/lib/jenkins/workspace/k8-deployment/ansible-playbook.yml ubuntu@13.233.215.80:/tmp"
                     sshagent(['ansible']) {
-                        sh 'ssh -o StrictHostKeyChecking=no ubuntu@65.0.80.22'
+                        sh 'ssh -o StrictHostKeyChecking=no ubuntu@13.233.215.80'
                         sh "mv /tmp/ansible-playbook.yml /home/ubuntu"
                     } 
                     
