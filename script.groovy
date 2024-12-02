@@ -11,7 +11,7 @@ pipeline {
         stage('Git Clone') {
             steps {
                 script {
-                    sshagent(['ubuntu']) {
+                    sshagent(['ansible']) {
                         sh '''
                         ssh -o StrictHostKeyChecking=no ubuntu@${SERVER_IP} << EOF
                         # Ensure the directory exists
