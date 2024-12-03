@@ -14,7 +14,7 @@ pipeline {
                 script {
                     sshagent(['ansible']) {
                         sh """
-                       git branch: 'main', url: 'https://github.com/Ab-D-ev/kubernetes-devops-project.git'
+                        git branch: 'main', url: 'https://github.com/Ab-D-ev/kubernetes-devops-project.git'
                         """
                     }
                 }
