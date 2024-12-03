@@ -3,20 +3,18 @@ pipeline {
 
     environment {
         SERVER_IP = '3.6.36.148'  // Server IP address
-        REPO_URL = 'https://github.com/Ab-D-ev/kubernetes-devops-project.git'  // GitHub repository URL
+        // REPO_URL = 'https://github.com/Ab-D-ev/kubernetes-devops-project.git'  // GitHub repository URL
         DOCKER_USER = 'anushree039'  // DockerHub username
     }
 
     stages {
         stage('Git Clone') {
-            
+
             steps {
                 script {
                     sshagent(['ansible']) {
                         sh """
-                        ssh -o StrictHostKeyChecking=no ubuntu@${SERVER_IP} 'bash -c "if [ ! -d /home/ubuntu/k8-deployment ]; then mkdir -p /home/ubuntu/k8-deployment; fi && \
-                        cd /home/ubuntu/k8-deployment && \
-                        if [ ! -d kubernetes-devops-project ]; then git clone ${REPO_URL} kubernetes-devops-project; else cd kubernetes-devops-project && git pull; fi"'
+                       git branch: 'main', url: 'https://github.com/Ab-D-ev/kubernetes-devops-project.git'
                         """
                     }
                 }
