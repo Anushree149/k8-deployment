@@ -1,7 +1,11 @@
-    stages { 
-        stage('Git Clone') { 
+pipeline {
+    agent any
+
+    stages {
+        stage('Git Clone') {
             steps {
-                git branch: "main", url:'https://github.com/Ab-D-ev/kubernetes-devops-project.git' 
-            } 
-        } 
+                git branch: 'main', url: 'https://github.com/Ab-D-ev/kubernetes-devops-project.git'
+            }
+        }
     }
+}
