@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        SERVER_IP = '3.6.36.148'  // Server IP address
+        SERVER_IP = '52.66.199.164'  // Server IP address
         // REPO_URL = 'https://github.com/Ab-D-ev/kubernetes-devops-project.git'  // GitHub repository URL
         DOCKER_USER = 'anushree039'  // DockerHub username
     }
