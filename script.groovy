@@ -3,21 +3,18 @@ pipeline {
 
     environment {
         SERVER_IP = '52.66.199.164'  // Server IP address
-        // REPO_URL = 'https://github.com/Ab-D-ev/kubernetes-devops-project.git'  // GitHub repository URL
         DOCKER_USER = 'anushree039'  // DockerHub username
     }
 
     stages {
         stage('Git Clone') {
-
             steps {
                 script {
                     sshagent(['ansible']) {
                         sh """
                         ssh -o StrictHostKeyChecking=no ubuntu@${SERVER_IP} 'cd /home/ubuntu/code && \
-                        git clone -b main https://github.com/Ab-D-ev/kubernetes-devops-project.git 
+                        git clone -b main https://github.com/Ab-D-ev/kubernetes-devops-project.git'
                         """
-                        
                     }
                 }
             }
@@ -28,10 +25,10 @@ pipeline {
                 script {
                     sshagent(['ansible']) {
                         sh """
-                        ssh -o StrictHostKeyChecking=no ubuntu@${SERVER_IP} 'bash -c "cd /home/ubuntu/k8-deployment/kubernetes-devops-project && \
+                        ssh -o StrictHostKeyChecking=no ubuntu@${SERVER_IP} 'cd /home/ubuntu/k8-deployment/kubernetes-devops-project && \
                         docker build -t k8-deployment:v1.${BUILD_ID} . && \
                         docker tag k8-deployment:v1.${BUILD_ID} ${DOCKER_USER}/k8-deployment:v1.${BUILD_ID} && \
-                        docker tag k8-deployment:v1.${BUILD_ID} ${DOCKER_USER}/k8-deployment:latest"'
+                        docker tag k8-deployment:v1.${BUILD_ID} ${DOCKER_USER}/k8-deployment:latest'
                         """
                     }
                 }
@@ -44,10 +41,10 @@ pipeline {
                     sshagent(['ansible']) {
                         withCredentials([string(credentialsId: 'DockerPass', variable: 'DockerPass')]) {
                             sh """
-                            ssh -o StrictHostKeyChecking=no ubuntu@${SERVER_IP} 'bash -c "echo ${DockerPass} | docker login -u ${DOCKER_USER} --password-stdin && \
+                            ssh -o StrictHostKeyChecking=no ubuntu@${SERVER_IP} 'echo ${DockerPass} | docker login -u ${DOCKER_USER} --password-stdin && \
                             docker push ${DOCKER_USER}/k8-deployment:v1.${BUILD_ID} && \
                             docker push ${DOCKER_USER}/k8-deployment:latest && \
-                            docker logout"'
+                            docker logout'
                             """
                         }
                     }
