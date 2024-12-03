@@ -13,9 +13,11 @@ pipeline {
             steps {
                 script {
                     sshagent(['ansible']) {
+                        sh " cd /home/ubuntu/code/ "
                         sh """
-                        git clone -b main https://github.com/Ab-D-ev/kubernetes-devops-project.git
+                        git clone -b main https://github.com/Ab-D-ev/kubernetes-devops-project.git 
                         """
+                        
                     }
                 }
             }
