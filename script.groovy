@@ -14,7 +14,7 @@ pipeline {
                 script {
                     sshagent(['ansible']) {
                         sh """
-                        ssh -o StrictHostKeyChecking=no ubuntu@${SERVER_IP}  cd /home/ubuntu/code && \
+                        ssh -o StrictHostKeyChecking=no ubuntu@${SERVER_IP} 'cd /home/ubuntu/code && \
                         git clone -b main https://github.com/Ab-D-ev/kubernetes-devops-project.git 
                         """
                         
