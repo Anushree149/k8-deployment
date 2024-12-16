@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        SERVER_IP = '52.66.199.164'  // Server IP address
+        SERVER_IP = '43.205.126.199'  // Server IP address
         DOCKER_USER = 'anushree039'  // DockerHub username
     }
 
