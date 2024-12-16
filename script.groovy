@@ -13,7 +13,7 @@ pipeline {
                     sshagent(['ansible']) {
                         sh """
                         ssh -o StrictHostKeyChecking=no ubuntu@${SERVER_IP} 'cd /home/ubuntu/code && \
-                        git clone -b main https://github.com/Anushree149/K8-Deploy.git'
+                        git clone -b main https://github.com/Anushree149/K8-Final.git'
                         """
                     }
                 }
