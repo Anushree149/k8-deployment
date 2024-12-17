@@ -57,6 +57,7 @@ pipeline {
                     ssh -o StrictHostKeyChecking=no ubuntu@${ANSIBLE_HOST_IP} '
                     scp -o StrictHostKeyChecking=no /home/ubuntu/code/K8-Final/service.yml ubuntu@${K8S_HOST_IP}:/home/ubuntu/
                     scp -o StrictHostKeyChecking=no /home/ubuntu/code/K8-Final/deployment.yml ubuntu@${K8S_HOST_IP}:/home/ubuntu/
+                    '
                     """
                 }
             }
