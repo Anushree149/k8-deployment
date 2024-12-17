@@ -58,6 +58,7 @@ pipeline {
             steps {
                 sshagent(['ansible']) {
                 sh """
+                ssh -o StrictHostKeyChecking=no ubuntu@${ANSIBLE_HOST_IP} 'sudo chmod 644 /home/ubuntu/code/K8-Final/service.yml /home/ubuntu/code/K8-Final/deployment.yml'
                 scp -o StrictHostKeyChecking=no /home/ubuntu/code/K8-Final/service.yml ubuntu@${K8S_HOST_IP}:/home/ubuntu/
                 scp -o StrictHostKeyChecking=no /home/ubuntu/code/K8-Final/deployment.yml ubuntu@${K8S_HOST_IP}:/home/ubuntu/
                 """
