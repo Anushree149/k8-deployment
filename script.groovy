@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     environment {
-        //SERVER_IP = '43.205.126.199'  // Server IP address
         DOCKER_USER = 'anushree039'  // DockerHub username
         ANSIBLE_HOST_IP = '13.201.8.20'  // Ansible Server IP
         K8S_HOST_IP = '3.110.136.28'  // Kubernetes Server IP
@@ -11,14 +10,7 @@ pipeline {
     stages {
         stage('Git Clone') {
             steps {
-                script {
-                    sshagent(['ansible']) {
-                        sh """
-                        ssh -o StrictHostKeyChecking=no ubuntu@${ANSIBLE_HOST_IP} 'cd /home/ubuntu/code/K8-Final && \
-                        git clone -b main https://github.com/Anushree149/K8-Final.git'
-                        """
-                    }
-                }
+                git branch: 'main', url: 'https://github.com/Anushree149/K8-Final.git'
             }
         }
 
@@ -27,10 +19,12 @@ pipeline {
                 script {
                     sshagent(['ansible']) {
                         sh """
-                        ssh -o StrictHostKeyChecking=no ubuntu@${ANSIBLE_HOST_IP} 'cd /home/ubuntu/code/K8-Final && \
-                        docker build -t k8-deployment:v1.${BUILD_ID} . && \
-                        docker tag k8-deployment:v1.${BUILD_ID} ${DOCKER_USER}/k8-deployment:v1.${BUILD_ID} && \
-                        docker tag k8-deployment:v1.${BUILD_ID} ${DOCKER_USER}/k8-deployment:latest'
+                        ssh -o StrictHostKeyChecking=no ubuntu@${ANSIBLE_HOST_IP} '
+                        cd /home/ubuntu/code/K8-Final &&
+                        docker build -t k8-deployment:v1.${BUILD_ID} . &&
+                        docker tag k8-deployment:v1.${BUILD_ID} ${DOCKER_USER}/k8-deployment:v1.${BUILD_ID} &&
+                        docker tag k8-deployment:v1.${BUILD_ID} ${DOCKER_USER}/k8-deployment:latest
+                        '
                         """
                     }
                 }
@@ -43,10 +37,12 @@ pipeline {
                     sshagent(['ansible']) {
                         withCredentials([string(credentialsId: 'DockerPass', variable: 'DockerPass')]) {
                             sh """
-                            ssh -o StrictHostKeyChecking=no ubuntu@${ANSIBLE_HOST_IP} 'echo ${DockerPass} | docker login -u ${DOCKER_USER} --password-stdin && \
-                            docker push ${DOCKER_USER}/k8-deployment:v1.${BUILD_ID} && \
-                            docker push ${DOCKER_USER}/k8-deployment:latest && \
-                            docker logout'
+                            ssh -o StrictHostKeyChecking=no ubuntu@${ANSIBLE_HOST_IP} '
+                            echo ${DockerPass} | docker login -u ${DOCKER_USER} --password-stdin &&
+                            docker push ${DOCKER_USER}/k8-deployment:v1.${BUILD_ID} &&
+                            docker push ${DOCKER_USER}/k8-deployment:latest &&
+                            docker logout
+                            '
                             """
                         }
                     }
@@ -57,11 +53,11 @@ pipeline {
         stage('Send Files to Ansible & K8 Servers') {
             steps {
                 sshagent(['ansible']) {
-                sh """
-                ssh -o StrictHostKeyChecking=no ubuntu@${ANSIBLE_HOST_IP} 'sudo chmod 644 /home/ubuntu/code/K8-Final/service.yml /home/ubuntu/code/K8-Final/deployment.yml'
-                scp -o StrictHostKeyChecking=no /home/ubuntu/code/K8-Final/service.yml ubuntu@${K8S_HOST_IP}:/home/ubuntu/
-                scp -o StrictHostKeyChecking=no /home/ubuntu/code/K8-Final/deployment.yml ubuntu@${K8S_HOST_IP}:/home/ubuntu/
-                """
+                    sh """
+                    ssh -o StrictHostKeyChecking=no ubuntu@${ANSIBLE_HOST_IP} '
+                    scp -o StrictHostKeyChecking=no /home/ubuntu/code/K8-Final/service.yml ubuntu@${K8S_HOST_IP}:/home/ubuntu/
+                    scp -o StrictHostKeyChecking=no /home/ubuntu/code/K8-Final/deployment.yml ubuntu@${K8S_HOST_IP}:/home/ubuntu/
+                    """
                 }
             }
         }
