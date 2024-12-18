@@ -52,14 +52,14 @@ pipeline {
 
         stage('Send Files to Ansible & K8 Servers') {
             steps {
-                sshagent(['ansible']) {
-                    sh """
-                    ssh -o StrictHostKeyChecking=no ubuntu@${ANSIBLE_HOST_IP} '
-                    scp -o StrictHostKeyChecking=no /home/ubuntu/code/K8-Final/service.yml ubuntu@${K8S_HOST_IP}:/home/ubuntu/
-                    scp -o StrictHostKeyChecking=no /home/ubuntu/code/K8-Final/deployment.yml ubuntu@${K8S_HOST_IP}:/home/ubuntu/
-                    '
-                    """
-                }
+                
+                    
+                    sh "scp -o StrictHostKeyChecking=no /var/lib/jenkins/workspace/k8-deployment/ansible-playbook.yml ubuntu@${ANSIBLE_HOST_IP}:/home/ubuntu/"
+                    sh "scp -o StrictHostKeyChecking=no /var/lib/jenkins/workspace/k8-deployment/service.yml ubuntu@${K8S_HOST_IP}:/home/ubuntu/"
+                    sh "scp -o StrictHostKeyChecking=no /var/lib/jenkins/workspace/k8-deployment/deployment.yml ubuntu@${K8S_HOST_IP}:/home/ubuntu/"
+                    
+                    
+                
             }
         }
 
