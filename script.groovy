@@ -21,9 +21,9 @@ pipeline {
                         sh """
                         ssh -o StrictHostKeyChecking=no ubuntu@${ANSIBLE_HOST_IP} '
                         cd /home/ubuntu/code/K8-Final &&
-                        docker build -t k8-deployment:v1.${BUILD_ID} . &&
-                        docker tag k8-deployment:v1.${BUILD_ID} ${DOCKER_USER}/k8-deployment:v1.${BUILD_ID} &&
-                        docker tag k8-deployment:v1.${BUILD_ID} ${DOCKER_USER}/k8-deployment:latest
+                        docker build -t k8:v1.${BUILD_ID} . &&
+                        docker tag k8:v1.${BUILD_ID} ${DOCKER_USER}/k8:v1.${BUILD_ID} &&
+                        docker tag k8:v1.${BUILD_ID} ${DOCKER_USER}/k8:latest
                         '
                         """
                     }
@@ -39,8 +39,8 @@ pipeline {
                             sh """
                             ssh -o StrictHostKeyChecking=no ubuntu@${ANSIBLE_HOST_IP} '
                             echo ${DockerPass} | docker login -u ${DOCKER_USER} --password-stdin &&
-                            docker push ${DOCKER_USER}/k8-deployment:v1.${BUILD_ID} &&
-                            docker push ${DOCKER_USER}/k8-deployment:latest &&
+                            docker push ${DOCKER_USER}/k8:v1.${BUILD_ID} &&
+                            docker push ${DOCKER_USER}/k8:latest &&
                             docker logout
                             '
                             """
