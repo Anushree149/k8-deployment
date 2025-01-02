@@ -18,14 +18,14 @@ pipeline {
             steps {
                 script {
                     sshagent(['ansible']) {
-                        sh """
-                        ssh -o StrictHostKeyChecking=no ubuntu@${ANSIBLE_HOST_IP} '
-                        cd /home/ubuntu/code/K8-Final 
-                        docker build -t k8:v1.${BUILD_ID} . 
-                        docker tag k8:v1.${BUILD_ID} ${DOCKER_USER}/k8:v1.${BUILD_ID} 
-                        docker tag k8:v1.${BUILD_ID} ${DOCKER_USER}/k8:latest 
-                        '
-                        """
+                        
+                        sh 'ssh -o StrictHostKeyChecking=no ubuntu@${ANSIBLE_HOST_IP} '
+                        sh 'cd /home/ubuntu/code/K8-Final '
+                        sh 'docker build -t k8:v1.${BUILD_ID} . '
+                        sh 'docker tag k8:v1.${BUILD_ID} ${DOCKER_USER}/k8:v1.${BUILD_ID} '
+                        sh 'docker tag k8:v1.${BUILD_ID} ${DOCKER_USER}/k8:latest '
+                        
+                    
                     }
                 }
             }
@@ -36,14 +36,14 @@ pipeline {
                 script {
                     sshagent(['ansible']) {
                         withCredentials([string(credentialsId: 'DockerPass', variable: 'DockerPass')]) {
-                            sh """
-                            ssh -o StrictHostKeyChecking=no ubuntu@${ANSIBLE_HOST_IP} '
-                            echo ${DockerPass} | docker login -u ${DOCKER_USER} --password-stdin 
-                            docker push ${DOCKER_USER}/k8:v1.${BUILD_ID} 
-                            docker push ${DOCKER_USER}/k8:latest 
-                            docker logout
-                            '
-                            """
+                            
+                            sh 'ssh -o StrictHostKeyChecking=no ubuntu@${ANSIBLE_HOST_IP} '
+                            sh 'echo ${DockerPass} | docker login -u ${DOCKER_USER} --password-stdin '
+                            sh 'docker push ${DOCKER_USER}/k8:v1.${BUILD_ID} '
+                            sh 'docker push ${DOCKER_USER}/k8:latest '
+                            sh 'docker logout'
+                            
+                            
                         }
                     }
                 }
