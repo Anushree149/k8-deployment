@@ -13,7 +13,7 @@ stages {
                 script {
                     sshagent(['ansible']) {
                         sh """
-                        git clone -b main https://github.com/Anushree149/K8-Final.git /home/ubuntu/code/K8-Final
+                        sudo git clone -b main https://github.com/Anushree149/K8-Final.git /home/ubuntu/code/K8-Final
                         """
                     }
                 }
