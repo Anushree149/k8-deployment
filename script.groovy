@@ -7,12 +7,19 @@ pipeline {
         K8S_HOST_IP = '15.207.87.181'  // Kubernetes Server IP
     }
 
-    stages {
+stages {
         stage('Git Clone') {
             steps {
-                git branch: 'main', url: 'https://github.com/Anushree149/K8-Final.git'
+                script {
+                    sshagent(['ansible']) {
+                        sh """
+                        git clone -b main https://github.com/Anushree149/K8-Final.git /home/ubuntu/code/K8-Final
+                        """
+                    }
+                }
             }
         }
+
 
         stage('Docker Build') {
             steps {
