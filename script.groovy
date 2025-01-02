@@ -8,6 +8,13 @@ pipeline {
     }
 
 stages {
+        stage('Clone Code') {
+            steps {
+                git branch: 'main', url: 'https://github.com/Anushree149/K8-Final.git'
+            }
+        }
+
+stages {
         stage('Git Clone') {
             steps {
                 script {
