@@ -14,7 +14,7 @@ stages {
             }
         }
 
-stages {
+
         stage('Git Clone') {
             steps {
                 script {
@@ -99,4 +99,4 @@ stages {
         }
     }
 }
-}
+
