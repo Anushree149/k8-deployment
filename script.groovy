@@ -35,7 +35,7 @@ stages {
                     sshagent(['ansible']) {
                         sh """
                         ssh -o StrictHostKeyChecking=no ubuntu@${ANSIBLE_HOST_IP} '
-                        cd /home/ubuntu/code/K8-Final &&
+                        cd /home/ubuntu/code/ &&
                         docker build -t k8:v1.${BUILD_ID} . &&
                         docker tag k8:v1.${BUILD_ID} ${DOCKER_USER}/k8:v1.${BUILD_ID} &&
                         docker tag k8:v1.${BUILD_ID} ${DOCKER_USER}/k8:latest
