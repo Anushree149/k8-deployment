@@ -82,7 +82,7 @@ stages {
                 sshagent(['ansible']) {
                     sh """
                     ssh -o StrictHostKeyChecking=no ubuntu@${ANSIBLE_HOST_IP} '
-                    ansible-playbook -i /home/ubuntu/my_inventory.ini /home/ubuntu/code/K8-Final/ansible-playbook.yml
+                    ansible-playbook -i /home/ubuntu/my_inventory.ini /home/ubuntu/code/ansible-playbook.yml
                     '
                     """
                 }
