@@ -19,7 +19,8 @@ stages {
             steps {
                 script {
                     sshagent(['ansible']) {
-                        
+
+                        sh 'ssh -o StrictHostKeyChecking=no ubuntu@${ANSIBLE_HOST_IP} "rm -r /home/ubuntu/code"'
                         sh 'ssh -o StrictHostKeyChecking=no ubuntu@${ANSIBLE_HOST_IP} "sudo git clone -b main https://github.com/Anushree149/K8-Final.git /home/ubuntu/code"'
                         
                     }
