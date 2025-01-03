@@ -3,8 +3,8 @@ pipeline {
 
     environment {
         DOCKER_USER = 'anushree039'  // DockerHub username
-        ANSIBLE_HOST_IP = '15.206.167.231'  // Ansible Server IP
-        K8S_HOST_IP = '15.207.87.181'  // Kubernetes Server IP
+        ANSIBLE_HOST_IP = '15.206.94.162'  // Ansible Server IP
+        K8S_HOST_IP = '65.2.131.164'  // Kubernetes Server IP
     }
 
 stages {
